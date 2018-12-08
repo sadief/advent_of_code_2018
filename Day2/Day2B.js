@@ -1,3 +1,4 @@
+var lev = require("fast-levenshtein");
 var input = [
   "ybruvapdgixszyckwtfqjonsie",
   "mbruvapxghslyyckwtfqjonsie",
@@ -250,56 +251,36 @@ var input = [
   "mbruvapdghxszycwwtfqjoqsie",
   "mbruvapdgoxezyckwtjqjonsie"
 ];
-var small = [
-  "abcdef",
-  "bababc",
-  "abbcde",
-  "abcccd",
-  "aabcdd",
-  "abcdee",
-  "ababab"
-];
-function checkSum(input) {
-  let hasTwo = 0;
-  let hasThree = 0;
-  let letters = input.split("");
-  let obj = {};
-  for (var i = 0; i < letters.length; i++) {
-    let x = letters[i];
-    console.log("test!", obj[x]);
-    if (obj[x] === undefined) {
-      console.log("has!", obj, x);
-      obj[x] = 1;
-    } else {
-      console.log("no has.", obj, x);
-      obj[x] += 1;
-    }
-    // obj[letters] = newObj[letters[j]] ? newObj[letters[j]] + 1 : 1;
-    // newObj[letters[i]] = newObj[letters[j]] ? newObj[letters[j]] + 1 : 1;
-  }
-  console.log(obj);
-  for (key in obj) {
-    if (obj[key] == 2) {
-      hasTwo = 1;
-    }
-    if (obj[key] == 3) {
-      hasThree = 1;
-    }
-  }
 
-  return { two: hasTwo, three: hasThree };
-}
+var small = ["abcde", "fghij", "klmno", "pqrst", "fguij", "axcye", "wvxyz"];
 
-function loopyLoop(input) {
-  let two = 0;
-  let three = 0;
+function findSimilar(input) {
   for (var i = 0; i < input.length; i++) {
-    var obj = checkSum(input[i]);
-    console.log(obj);
-    two += obj.two;
-    three += obj.three;
+    for (var j = 0; j < input.length; j++) {
+      var res = lev.get(input[i], input[j]);
+      if (res == 1) {
+        return [input[i], input[j]];
+      }
+    }
   }
-  return two * three;
+
+  return [];
 }
 
-console.log(loopyLoop(input));
+function findCommon(a, b) {
+  let bparts = b.split("");
+  let aparts = a.split("");
+
+  let res = "";
+
+  for (var i = 0; i < aparts.length; i++) {
+    if (aparts[i] == bparts[i]) {
+      res += aparts[i];
+    }
+  }
+
+  return res;
+}
+
+let result = findSimilar(input);
+console.log(findCommon(result[0], result[1]));
